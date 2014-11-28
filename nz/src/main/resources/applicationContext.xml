@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+    xmlns:aop="http://www.springframework.org/schema/aop" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+    xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+		http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+    <!-- 使用annotation 自动注册bean, 并保证@Required、@Autowired的属性被注入 -->
+    <context:component-scan base-package="com.daniu">
+        <!-- 扫描符合@Repository @Service @Controller的类 -->
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository" />
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service" />
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+    </context:component-scan>
+
+    <!-- JPA 数据库连接 -->
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="defaultPU" />
+    </bean>
+    <!--事务管理Bean -->
+    <bean id="txManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+    </bean>
+    <!--说明事务的配置使用的注解方式 -->
+    <tx:annotation-driven transaction-manager="txManager" />
+
+    <!-- Shiro -->
+    <!-- <bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager" />
+    <bean id="credentialsMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+        <property name="hashAlgorithmName" value="SHA-512" />
+        <property name="hashIterations" value="1024" />
+        <property name="storedCredentialsHexEncoded" value="false" />
+    </bean>
+    <bean id="shiroRealm" class="com.daniu.nz.web.ShrioRealm">
+        <property name="cacheManager" ref="cacheManager" />
+        <property name="userService" ref="userService" />
+        <property name="credentialsMatcher" ref="credentialsMatcher" />
+    </bean>
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="cacheManager" ref="cacheManager" />
+        <property name="realm" ref="shiroRealm" />
+    </bean> -->
+    <!-- shiroFilter -->
+    <!-- <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager" />
+        <property name="successUrl" value="/index" />
+        <property name="loginUrl" value="/login" />
+        <property name="filterChainDefinitions">
+            <value>
+                /static/**=anon
+                /login=anon
+                /success=anon
+                /captcha*=anon
+                /register=anon
+                /register/**=anon
+                /password/retrieve=anon
+                /clk**=anon
+                /imp**=anon
+                /**=authc
+            </value>
+        </property>
+    </bean> -->
+
+    <!-- Memcached -->
+    <!-- <bean name="defaultMemcachedClient" class="com.google.code.ssm.CacheFactory">
+        <property name="cacheName" value="defaultCache" />
+        <property name="cacheClientFactory">
+        <bean name="cacheClientFactory" class="com.google.code.ssm.providers.spymemcached.MemcacheClientFactoryImpl" />
+        </property>
+        <property name="addressProvider">
+        <bean class="com.google.code.ssm.config.DefaultAddressProvider">
+        <property name="address" value="192.168.10.34:11211" />
+        </bean>
+        </property>
+        <property name="configuration">
+        <bean class="com.google.code.ssm.providers.CacheConfiguration">
+        <property name="consistentHashing" value="true" />
+        </bean>
+        </property>
+        <property name="cacheAliases">
+        <list>
+        <value>cacheAlias</value>
+        </list>
+        </property>
+        </bean> -->
+</beans>  
